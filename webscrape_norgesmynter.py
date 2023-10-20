@@ -5,6 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import configparser
 
+# Use configparser to keep username and password confidential
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -14,6 +16,8 @@ password = config.get('credentials', 'password')
 def init_driver():
     driver = webdriver.Chrome()
     return driver
+
+# Function to login on website, in order to access prices
 
 def login(driver, username, password):
     driver.get("https://norgesmynter.no/min-profil/")
