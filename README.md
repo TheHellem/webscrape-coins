@@ -1,4 +1,4 @@
-# A scrip for scraping coin data from www.norgesmynter.no
+# A script for scraping coin data from www.norgesmynter.no
 
 *Work in progess*
 
@@ -9,9 +9,7 @@ In this script I use selenium to collect data about Norwegian coins from the coi
 
 Make sure that you have selenium installed, if you don't:
 
-'
-pip install selenium
-'
+`pip install selenium`
 
 You also need [chromeDriver](https://chromedriver.chromium.org/) installed. Also be sure to include it in your path or environment.
 
