@@ -2,7 +2,7 @@
 
 > :warning: **This has nothing to do with crypto currency**: This is about the OG coins!
 
-_Work in progess_
+_Work in progress_
 
 In this script I use selenium to collect data about Norwegian coins from the coin catalogue [Norges Mynter](https://norgesmynter.no/).
 
@@ -14,5 +14,16 @@ Make sure that you have selenium installed, if you don't:
 
 You also need [chromeDriver](https://chromedriver.chromium.org/) installed. Also be sure to include it in your path or environment.
 
-If you have this sorted out the script is very much plug-and-play, and when you run it it should spit out a JSON file with data about all Norwegian coins,
+After this you will have to create an account on [norgesmynter.no](https://norgesmynter.no/). It is easier to do this if you speak Norwegian. If not try to make an Norwegian friend, or just learning the language. I recomend dualingo.
+
+Then you'll need to set up a config.ini file with the following:
+
+
+```
+[credentials]
+username = <your-username>
+password = <your-password>
+```
+
+If you have this sorted out the script is very much plug-and-play. When you run it it should spit out a JSON file with data about all Norwegian coins
 that have been in circulation since the late 15th century. Enjoy!
