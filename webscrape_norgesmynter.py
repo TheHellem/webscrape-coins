@@ -4,6 +4,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import configparser
+from bs4 import BeautifulSoup
 
 # Use configparser to keep username and password confidential
 
@@ -13,19 +14,16 @@ config.read('config.ini')
 username = config.get('credentials', 'username')
 password = config.get('credentials', 'password')
 
-
 def init_driver():
     driver = webdriver.Chrome()
     return driver
-
-# Function to login on website, in order to access prices
-
 
 # Array of urls with coins
 urlArr = [
 
 ]
 
+# Function to login on website, in order to access prices
 def login(driver, username, password):
     driver.get("https://norgesmynter.no/min-profil/")
     try:
@@ -46,32 +44,51 @@ def login(driver, username, password):
     except TimeoutException:
         print("Element not found on the page or took too long to load.")
 
-def scrape(url):
+def scrape(url, driver):
     driver.get(url)
-    specifications = {}
     try:
-        spec_container = driver.find_element_by_class_name('product-fields-one')
-        field_text_elements = spec_container.find_elements_by_class_name('field-text')
-        field_value_elements = spec_container.find_elements_by_class_name('field-value')
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        
+        title_element = soup.find('div', class_='h1-content').find('h1')
+        title_text = title_element.text
 
-        field_text_elements = spec_container.find_elements_by_class_name('field-text')
-        field_value_elements = spec_container.find_elements_by_class_name('field-value')
-
+        specifications = {}
+        spec_container = soup.find('div', class_='product-fields-one')
+        field_text_elements = spec_container.find_all('div', class_='field-text')
+        field_value_elements = spec_container.find_all('div', class_='field-value')
+        
         for field_text, field_value in zip(field_text_elements, field_value_elements):
-            key = field_text.text.strip()  
-            value = field_value.text.strip()  
-            specifications[key] = value  
+            key = field_text.text.strip()
+            value = field_value.text.strip()
+            specifications[key] = value
 
-    except NoSuchElementException as e:
-        print("An element was not found. Error:", e)
+        table_data = []
+        table = soup.find('table', class_='col-md-12')
+        rows = table.find('tbody').find_all('tr')
+        
+        for row in rows:
+            columns = row.find_all('td')
+            values = [column.get_text(strip=True) for column in columns]
+            table_data.append(values)
 
-    print(specifications)
+        print(title_text)
+        print(specifications)
+        for row_data in table_data:
+            print(row_data)
 
+    except Exception as e:
+        print("An error occurred:", e)
 
 if __name__ == "__main__":
     driver = init_driver()
     login(driver, username, password)
-    scrape("https://norgesmynter.no/produkt/1-krone-1908-1917/")
+    
+    urls = [
+        "https://norgesmynter.no/produkt/1-krone-1908-1917/",
+        # Add more URLs if needed
+    ]
+    
+    for url in urls:
+        scrape(url, driver)
 
-
-driver.quit()
+    driver.quit()
