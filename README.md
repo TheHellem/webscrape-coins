@@ -1,12 +1,13 @@
 # A script for scraping coin data from www.norgesmynter.no
 
-> :warning: **This has nothing to do with crypto currency**: This is about the OG coins!
+> :warning: **This has nothing to do with crypto currency**: It's about those shiny metal things!
 
 _Work in progress_
 
-In this script I use selenium to collect data about Norwegian coins from the coin catalogue [Norges Mynter](https://norgesmynter.no/).
+In this script I use selenium and beautifulsoup to collect data about Norwegian coins, from the coin catalogue [Norges Mynter](https://norgesmynter.no/), for personal use. 
+The purpose of making this public is solely to demonstrate an example of webscraping. 
 
-## How to Run this script yourself
+## How to Run this script
 
 Make sure that you have selenium installed, if you don't:
 
