@@ -99,8 +99,8 @@ def scrape(url, driver):
             values = [column.get_text(strip=True) for column in columns]
             year = values[1]  # Assuming the year is in the second column
             year_data[year] = {
-                'title': title_text,
                 'specifications': specifications,
+                'title': title_text, 
                 'Value': values[0],
                 'Opplag': values[2],
                 'Kv. 0': values[4],
@@ -112,7 +112,8 @@ def scrape(url, driver):
                 'Spesifikasjon': values[10]
             }
 
-        return year_data
+        return {title_text : year_data}
+            
 
     except Exception as e:
         print("An error occurred:", e)
