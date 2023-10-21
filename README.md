@@ -12,7 +12,7 @@ Make sure that you have Selenium installed. If you don't, run:
 
 > pip install selenium
 
-The same goes for [beautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/).
+The same goes for [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/).
 
 You also need [ChromeDriver](https://chromedriver.chromium.org/) installed. Also, be sure to include it in your path or environment.
 
