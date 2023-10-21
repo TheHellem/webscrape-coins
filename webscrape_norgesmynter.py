@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import configparser
 from bs4 import BeautifulSoup
+import json
 
 # Use configparser to keep username and password confidential
 
@@ -56,15 +57,13 @@ def find_next_link(url, key_class, driver):
 # It has to be a better way to do this, but I guess it works
 def make_url_list (url, driver):
     coin_types_urls = find_next_link(url, "mynttype", driver)
-    # print(coin_types_urls)
     coin_edition_urls = []
     for url in coin_types_urls:
         coin_editions = find_next_link(url, "mynttype", driver)
         for url in coin_editions:
             coin_edition = find_next_link(url, "middleboxListing", driver)
             coin_edition_urls.append(coin_edition)
-    print(coin_edition_urls)
-
+    return coin_edition_urls
 
 
 def scrape(url, driver):
@@ -95,25 +94,25 @@ def scrape(url, driver):
             table_data.append(values)
 
         year_data = {}
-        for row_data in table_data:
-            year = row_data[1]  # Assuming the year is in the second column
+        for row in rows:
+            columns = row.find_all('td')
+            values = [column.get_text(strip=True) for column in columns]
+            year = values[1]  # Assuming the year is in the second column
             year_data[year] = {
-                'Valør': row_data[0],
-                'Opplag': row_data[2],
-                'Kv. 0': row_data[4],
-                'Kv. 0/01': row_data[5],
-                'Kv. 01': row_data[6],
-                'Kv. 1+': row_data[7],
-                'Kv. 1': row_data[8],
-                'Kv. 1-': row_data[9],
-                'Spesifikasjon': row_data[10]
+                'title': title_text,
+                'specifications': specifications,
+                'Value': values[0],
+                'Opplag': values[2],
+                'Kv. 0': values[4],
+                'Kv. 0/01': values[5],
+                'Kv. 01': values[6],
+                'Kv. 1+': values[7],
+                'Kv. 1': values[8],
+                'Kv. 1-': values[9],
+                'Spesifikasjon': values[10]
             }
 
-        return {
-            'title': title_text,
-            'specifications': specifications,
-            'year_data': year_data
-        }
+        return year_data
 
     except Exception as e:
         print("An error occurred:", e)
@@ -122,14 +121,14 @@ if __name__ == "__main__":
     driver = init_driver()
     login(driver, username, password)
     
-    # make_url_list('https://norgesmynter.no/myntkatalogen/', driver)
-
-    print(scrape('https://norgesmynter.no/produkt/1-ore-1918-1921-jern/', driver))
-
-
-
-    
-    # for url in urls:
-    #     scrape(url, driver)
+    nested_urls = make_url_list('https://norgesmynter.no/myntkatalogen/', driver)
+    urls = [url for sublist in nested_urls for url in sublist]
+   
+    for url in urls:
+        json_object = json.dumps(scrape(url, driver), indent=4)
+        with open("norwegian_coins.json", "a") as outfile:  # Use "a" for append mode
+            outfile.write(json_object)
+            outfile.write("\n")  # Add a newline to separate JSON objects
+        
 
     driver.quit()
